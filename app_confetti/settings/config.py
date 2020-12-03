@@ -3,7 +3,7 @@ class BaseConfig:
 
     The `environ_config` library allows for its attributes to be retrieved from
     environment variables, the prefix for this class and the attribute name
-    defines the variable name to be used, e.g. MT4_SENTRY_DSN for SENTRY_DSN.
+    defines the variable name to be used, e.g. PREFIX_SENTRY_DSN for SENTRY_DSN.
 
     This class is generally used in settings.__init__.py to instantiate an object from
     the environment.

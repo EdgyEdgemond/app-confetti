@@ -1,41 +1,10 @@
 import ast
 import os
-from decimal import Decimal
 
 import boto3
 import environ
 from botocore.exceptions import ClientError
 from ec2_metadata import ec2_metadata
-
-from clt_util import constants
-
-
-def pnl_pip_calculator(asset, order_type, open_price, close_price, tp_price, sl_price):
-    pip = Decimal("0.0001")
-    for c, p in constants.asset_pip.items():
-        if c in asset:
-            pip = p
-    distance, tp_distance, sl_distance = 0, 0, 0
-
-    if order_type == constants.OrderType.BUY:
-        distance = (close_price - open_price) / pip
-        if tp_price != 0:
-            tp_distance = (tp_price - open_price) / pip
-        if sl_price != 0:
-            sl_distance = (open_price - sl_price) / pip
-
-    elif order_type == constants.OrderType.SELL:
-        distance = (open_price - close_price) / pip
-        if tp_price != 0:
-            tp_distance = (open_price - tp_price) / pip
-        if sl_price != 0:
-            sl_distance = (sl_price - open_price) / pip
-
-    return {
-        "pnl_pips": distance,
-        "tp_pips": tp_distance,
-        "sl_pips": sl_distance,
-    }
 
 
 def find_env_file(env_file_name, start_path):

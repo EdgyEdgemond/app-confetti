@@ -1,14 +1,12 @@
 import os
-from decimal import Decimal
 from unittest import mock
 
 import environ
 import pytest
 from botocore.exceptions import ClientError
 
-from clt_util import constants
-from clt_util import util
-from clt_util.settings.config import BaseConfig
+from app_confetti import util
+from app_confetti.settings.config import BaseConfig
 
 
 @pytest.fixture
@@ -353,49 +351,3 @@ class TestFindEnvFile:
             fd.write("VARIABLE=testing is = to something\n")
 
         assert util.find_env_file("test.env", file_path) == {"VARIABLE": "testing is = to something"}
-
-
-class TestPipCalculator:
-    def test_buy(self):
-        assert util.pnl_pip_calculator(
-            "EURAUD",
-            constants.OrderType.BUY,
-            Decimal("10.0"), Decimal("5.0"), Decimal("6.0"), Decimal("4.0"),
-        ) == {
-            "pnl_pips": -50000.0,
-            "sl_pips": 60000.0,
-            "tp_pips": -40000.0,
-        }
-
-    def test_sell(self):
-        assert util.pnl_pip_calculator(
-            "EURAUD",
-            constants.OrderType.SELL,
-            Decimal("10.0"), Decimal("5.0"), Decimal("6.0"), Decimal("4.0"),
-        ) == {
-            "pnl_pips": 50000.0,
-            "sl_pips": -60000.0,
-            "tp_pips": 40000.0,
-        }
-
-    def test_buy_convert(self):
-        assert util.pnl_pip_calculator(
-            "AUDJPY",
-            constants.OrderType.BUY,
-            Decimal("10.0"), Decimal("5.0"), Decimal("6.0"), Decimal("4.0"),
-        ) == {
-            "pnl_pips": -500.0,
-            "sl_pips": 600.0,
-            "tp_pips": -400.0,
-        }
-
-    def test_sell_convert(self):
-        assert util.pnl_pip_calculator(
-            "JPYAUD",
-            constants.OrderType.SELL,
-            Decimal("10.0"), Decimal("5.0"), Decimal("6.0"), Decimal("4.0"),
-        ) == {
-            "pnl_pips": 500.0,
-            "sl_pips": -600.0,
-            "tp_pips": 400.0,
-        }

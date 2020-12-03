@@ -1,8 +1,8 @@
 install:
-	pip install -e .
+	poetry install --no-dev
 
 install-dev:
-	pip install -e .[dev,test]
+	poetry install
 
 check-style:
 	flake8
@@ -11,7 +11,7 @@ tests:
 	pytest
 
 tests-coverage:
-	pytest --cov=app_config
+	pytest --cov=app_confetti
 
 isort:
 	isort -y
