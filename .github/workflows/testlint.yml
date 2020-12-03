@@ -38,7 +38,7 @@ jobs:
         poetry install
     - name: Generate coverage report
       run: |
-        pytest --cov=web_error --cov-report=xml
+        pytest --cov=app_confetti --cov-report=xml
     - name: Upload coverage to Codecov  
       uses: codecov/codecov-action@v1
       with:
