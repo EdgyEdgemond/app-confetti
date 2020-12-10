@@ -47,13 +47,17 @@ def str_to_literal(val):
     return val
 
 
+def get_region():
+    return ec2_metadata.region
+
+
 def get_secret(secret_name="settings"):
     """
     If you need more information about configurations or implementing the sample code, visit the AWS docs:
     https://aws.amazon.com/developers/getting-started/python/
     """
 
-    region_name = ec2_metadata.region
+    region_name = get_region()
     instance_id = ec2_metadata.instance_id
 
     session = boto3.session.Session()
