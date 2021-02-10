@@ -16,11 +16,5 @@ tests-coverage:
 isort:
 	isort -y
 
-patch_release:
-	bumpversion patch
-
-minor_release:
-	bumpversion minor
-
-major_release:
-	bumpversion major
+release:
+	changelog-gen
