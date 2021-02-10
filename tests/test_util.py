@@ -42,21 +42,26 @@ class MockConfig(BaseConfig):
 
 
 class TestBaseConfig:
+    def test_env_not_set(self, monkeypatch, env_file_factory):
+        start_path = env_file_factory("env")
+        with pytest.raises(ValueError):
+            util.get_settings(MockConfig, start_path, prefix="PREFIX")
+
     def test_defaults(self, monkeypatch, env_file_factory):
         start_path = env_file_factory("env")
-        monkeypatch.setenv("MT4_ENV", "env")
-        settings = util.get_settings(MockConfig, start_path)
+        monkeypatch.setenv("PREFIX_ENV", "env")
+        settings = util.get_settings(MockConfig, start_path, prefix="PREFIX")
         assert settings.DEBUG is False
         assert settings.LOGGING_LEVEL == "INFO"
         assert settings.SENTRY_DSN is None
 
     def test_overrides(self, monkeypatch, env_file_factory):
         start_path = env_file_factory("env")
-        monkeypatch.setenv("MT4_ENV", "env")
+        monkeypatch.setenv("PREFIX_ENV", "env")
         monkeypatch.setenv("PREFIX_DEBUG", "1")
         monkeypatch.setenv("PREFIX_LOGGING_LEVEL", "DEBUG")
         monkeypatch.setenv("PREFIX_SENTRY_DSN", "sentry-dsn")
-        settings = util.get_settings(MockConfig, start_path)
+        settings = util.get_settings(MockConfig, start_path, prefix="PREFIX")
         assert settings.DEBUG is True
         assert settings.LOGGING_LEVEL == "DEBUG"
         assert settings.SENTRY_DSN == "sentry-dsn"
@@ -70,7 +75,7 @@ class TestBaseConfig:
                                      "level": "DEBUG"},
                          "sentry": {"class": "raven.handlers.logging.SentryHandler",
                                     "dsn": "sentry-dsn",
-                                    "environment": "dev",
+                                    "environment": "env",
                                     "level": "ERROR"}},
             "loggers": {"": {"handlers": ["default",
                                           "sentry"],
@@ -88,44 +93,30 @@ class TestGetSettings:
     def test_get_settings_in_local_environment(self, monkeypatch, env_file_factory):
         env_name = "my_environment"
         start_path = env_file_factory(env_name)
-        monkeypatch.setenv("MT4_ENV", env_name)
-        settings = util.get_settings(MockConfig, start_path)
+        monkeypatch.setenv("PREFIX_ENV", env_name)
+        settings = util.get_settings(MockConfig, start_path, prefix="PREFIX")
         assert settings.VAR_1 == "value_1"
         assert settings.VAR_2 == "value_2"
 
     def test_get_settings_env_vars_override_secrets(self, monkeypatch, env_file_factory):
         env_name = "my_environment"
         start_path = env_file_factory(env_name)
-        monkeypatch.setenv("MT4_ENV", env_name)
+        monkeypatch.setenv("PREFIX_ENV", env_name)
         monkeypatch.setenv("PREFIX_VAR_1", "value from environment")
-        settings = util.get_settings(MockConfig, start_path)
+        settings = util.get_settings(MockConfig, start_path, prefix="PREFIX")
         assert settings.VAR_1 == "value from environment"
         assert settings.VAR_2 == "value_2"
 
     def test_get_secrets_from_kms(self, monkeypatch):
-        monkeypatch.setenv("MT4_ENV", "")
+        monkeypatch.setenv("PREFIX_SECRET_METHOD", "other")
         monkeypatch.setattr(util, "get_secret", mock.Mock(return_value={
             "PREFIX_VAR_1": "var1",
             "PREFIX_VAR_2": "var2",
         }))
 
-        settings = util.get_settings(MockConfig, "")
+        settings = util.get_settings(MockConfig, "", "PREFIX", secret_key="settings")
 
-        assert util.get_secret.call_args == mock.call("settings")
-
-        assert settings.VAR_1 == "var1"
-        assert settings.VAR_2 == "var2"
-
-    def test_get_secrets_from_kms_custom_key(self, monkeypatch):
-        monkeypatch.setenv("MT4_ENV", "")
-        monkeypatch.setattr(util, "get_secret", mock.Mock(return_value={
-            "PREFIX_VAR_1": "var1",
-            "PREFIX_VAR_2": "var2",
-        }))
-
-        settings = util.get_settings(MockConfig, "", "mysettings")
-
-        assert util.get_secret.call_args == mock.call("mysettings")
+        assert util.get_secret.call_args == mock.call(secret_key="settings")
 
         assert settings.VAR_1 == "var1"
         assert settings.VAR_2 == "var2"

@@ -129,12 +129,10 @@ def get_settings(config_cls, start_path, prefix, **kwargs):
 
     :param config_cls: a class decorated with @environ.config
     :param start_path: Path to start the search from if loading from an .env file. Typically __file__ of calling context
+    :param prefix: App specific prefix for environment variables
     :param kargs: kwargs required by secret method, AWS requires secret_key=x for example.
     :return: instance of config_class
     """
-    if prefix is None:
-        raise ValueError("Please supply a prefix for your applications config.")
-
     secret_method = os.getenv("{}_SECRET_METHOD".format(prefix), "file").lower()
 
     if secret_method == "file":
