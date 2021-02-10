@@ -119,24 +119,34 @@ def get_secret(secret_name="settings"):
     return secrets
 
 
-def get_settings(config_cls, start_path, secret_key="settings"):
+def get_settings(config_cls, start_path, prefix, **kwargs):
     """
     A wrapper around aws.SecresManager which acts as a factory for creating instances
     of settings classes (config_cls). It is assumed config_cls is wrapped with @environ.config. If the MT4_ENV
     environment variable is set, settings defined in a local .env file are used instead. The typical usage is to
-    export MT4_ENV=dev in your .bashrc or .bash_profile, and override with pytest-env in setup.cfg for testing
+    export {prefix}_ENV=dev in your .bashrc or .bash_profile, and override with pytest-env in setup.cfg for testing
     environments, and to create corresponding dev.env and test.env files.
 
     :param config_cls: a class decorated with @environ.config
     :param start_path: Path to start the search from if loading from an .env file. Typically __file__ of calling context
+    :param kargs: kwargs required by secret method, AWS requires secret_key=x for example.
     :return: instance of config_class
     """
-    env = os.getenv("MT4_ENV")
+    if prefix is None:
+        raise ValueError("Please supply a prefix for your applications config.")
 
-    if env:
+    secret_method = os.getenv("{}_SECRET_METHOD".format(prefix), "file").lower()
+
+    if secret_method == "file":
+        env = os.getenv("{}_ENV".format(prefix))
+
+        if env is None:
+            raise ValueError("Please set {}_ENV environment variable to fetch file based secrets.".format(prefix))
+
         _settings_dict = find_env_file(env_file_name="{0}.env".format(env), start_path=start_path)
     else:
-        _settings_dict = get_secret(secret_key)
+        # AWS is the only option...
+        _settings_dict = get_secret(**kwargs)
 
     _settings_dict.update(os.environ)  # include any OS env vars
     settings = environ.to_config(config_cls, _settings_dict)
