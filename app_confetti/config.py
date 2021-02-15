@@ -1,21 +1,26 @@
+import dataclasses
+
+from app_confetti import util
+
+
+@dataclasses.dataclass(frozen=True)
 class BaseConfig:
     """Configuration class.
 
-    The `environ_config` library allows for its attributes to be retrieved from
-    environment variables, the prefix for this class and the attribute name
-    defines the variable name to be used, e.g. PREFIX_SENTRY_DSN for SENTRY_DSN.
+    The `env` util function allows for attributes to be retrieved from environment variables.
 
-    This class is generally used in settings.__init__.py to instantiate an object from
-    the environment.
-
-    Inheriting classes must implement:
-        cls.LOGGING_LEVEL
-        cls.SENTRY_DSN
-        cls.ENV
+    Inheriting classes can override:
+        logging_level: str
+        sentry_dsn: str
+        env: str
     """
 
+    logging_level: str = util.env("LOGGING_LEVEL:INFO")
+    sentry_dsn: int = util.env("SENTRY_DSN:None", util.str_to_literal)
+    env: int = util.env("ENV:None", util.str_to_literal)
+
     @property
-    def LOGGING(self):
+    def logging_config(self):
         return {
             "version": 1,
             "disable_existing_loggers": False,
@@ -28,20 +33,20 @@ class BaseConfig:
             "handlers": {
                 "default": {
                     "class": "logging.StreamHandler",
-                    "level": self.LOGGING_LEVEL,
+                    "level": self.logging_level,
                     "formatter": "default",
                 },
                 "sentry": {
                     "level": "ERROR",
                     "class": "raven.handlers.logging.SentryHandler",
-                    "dsn": self.SENTRY_DSN,
-                    "environment": self.ENV,
+                    "dsn": self.sentry_dsn,
+                    "environment": self.env,
                 },
             },
             "loggers": {
                 "": {
                     "handlers": ["default", "sentry"],
-                    "level": self.LOGGING_LEVEL,
+                    "level": self.logging_level,
                     "propagate": True,
                 },
                 "raven": {

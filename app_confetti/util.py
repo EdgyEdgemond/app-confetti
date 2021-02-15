@@ -1,38 +1,6 @@
 import ast
+import dataclasses
 import os
-
-import boto3
-import environ
-from botocore.exceptions import ClientError
-from ec2_metadata import ec2_metadata
-
-
-def find_env_file(env_file_name, start_path):
-    """Searches for an env file recursively up the tree until the cwd.
-
-    The env var should contain standard VARIABLE="VALUE" lines. Lines prefixed
-    with a # are ignored as comments. White space is ignored.
-
-    :param env_file_name: Name of the env file to search for.
-    :param start_path: Path to start the search from.
-    :returns: A dict with the parsed env vars from the file.
-    """
-    if os.path.isfile(start_path):
-        start_path = os.path.dirname(start_path)
-
-    if start_path == os.path.dirname(os.getcwd()):
-        return {}
-    elif env_file_name in os.listdir(start_path):
-        with open(os.path.join(start_path, env_file_name)) as fd:
-            file_vars = {}
-            for line in fd:
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    key, value = line.split("=", 1)
-                    file_vars[key] = value.replace('"', "")
-        return file_vars
-    else:
-        return find_env_file(env_file_name, os.path.dirname(start_path))
 
 
 def str_to_literal(val):
@@ -47,106 +15,32 @@ def str_to_literal(val):
     return val
 
 
-def get_region():
-    return ec2_metadata.region
-
-
-def get_secret(secret_name="settings"):
+def env(key, convert=str, **kwargs):
     """
-    If you need more information about configurations or implementing the sample code, visit the AWS docs:
-    https://aws.amazon.com/developers/getting-started/python/
+    A factory around `dataclasses.field` that can be used to load or default
+    an envvar. If you wish to load from an external source, do that first and
+    inject it's values into os.environ before instantiating your
+    config/settings class.
+
+    Args:
+        key: in the format of either KEY or KEY:DEFAULT
+        convert: a function that accepts a string and returns a different type
+        kwargs: any remaining kwargs for `dataclasses.field`
+
+    Returns:
+        dataclasses.field
+
+    Raises:
+        KeyError: in the event an envvar isn't found and doesn't have a default
     """
+    key, _, default = key.partition(":")
 
-    region_name = get_region()
-    instance_id = ec2_metadata.instance_id
-
-    session = boto3.session.Session()
-
-    # Create an EC2 client
-    client = session.client(
-        service_name="ec2",
-        region_name=region_name,
-    )
-
-    response = client.describe_instances(InstanceIds=[instance_id])
-    tags = response["Reservations"][0]["Instances"][0]["Tags"]
-    tag_data = {
-        tag["Key"]: tag["Value"]
-        for tag in tags
-        if tag["Key"].startswith("MT4")
-    }
-
-    # Create a Secrets Manager client
-    client = session.client(
-        service_name="secretsmanager",
-        region_name=region_name,
-    )
-
-    # In this sample we only handle the specific exceptions for the "GetSecretValue" API.
-    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-    # We rethrow the exception by default.
-
-    secrets = {}
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name,
-        )
-    except ClientError as e:
-        """
-        e.response["Error"]["Code"] == "DecryptionFailureException":
-            # Secrets Manager can"t decrypt the protected secret text using the provided KMS key.
-            # Deal with the exception here, and/or rethrow at your discretion.
-        e.response["Error"]["Code"] == "InternalServiceErrorException":
-            # An error occurred on the server side.
-            # Deal with the exception here, and/or rethrow at your discretion.
-        e.response["Error"]["Code"] == "InvalidParameterException":
-            # You provided an invalid value for a parameter.
-            # Deal with the exception here, and/or rethrow at your discretion.
-        e.response["Error"]["Code"] == "InvalidRequestException":
-            # You provided a parameter value that is not valid for the current state of the resource.
-            # Deal with the exception here, and/or rethrow at your discretion.
-        e.response["Error"]["Code"] == "ResourceNotFoundException":
-            # We can"t find the resource that you asked for.
-            # Deal with the exception here, and/or rethrow at your discretion.
-        """
-        raise e
-    else:
-        # Decrypts secret using the associated KMS CMK.
-        secret = get_secret_value_response["SecretString"]
-        secrets = str_to_literal(secret)
-
-    secrets.update(tag_data)
-    return secrets
-
-
-def get_settings(config_cls, start_path, prefix, **kwargs):
-    """
-    A wrapper around aws.SecresManager which acts as a factory for creating instances
-    of settings classes (config_cls). It is assumed config_cls is wrapped with @environ.config. If the MT4_ENV
-    environment variable is set, settings defined in a local .env file are used instead. The typical usage is to
-    export {prefix}_ENV=dev in your .bashrc or .bash_profile, and override with pytest-env in setup.cfg for testing
-    environments, and to create corresponding dev.env and test.env files.
-
-    :param config_cls: a class decorated with @environ.config
-    :param start_path: Path to start the search from if loading from an .env file. Typically __file__ of calling context
-    :param prefix: App specific prefix for environment variables
-    :param kargs: kwargs required by secret method, AWS requires secret_key=x for example.
-    :return: instance of config_class
-    """
-    secret_method = os.getenv("{}_SECRET_METHOD".format(prefix), "file").lower()
-
-    if secret_method == "file":
-        env = os.getenv("{}_ENV".format(prefix))
-
-        if env is None:
-            raise ValueError("Please set {}_ENV environment variable to fetch file based secrets.".format(prefix))
-
-        _settings_dict = find_env_file(env_file_name="{0}.env".format(env), start_path=start_path)
-    else:
-        # AWS is the only option...
-        _settings_dict = get_secret(**kwargs)
-
-    _settings_dict.update(os.environ)  # include any OS env vars
-    settings = environ.to_config(config_cls, _settings_dict)
-
-    return settings
+    def default_factory(key=key, default=default, convert=convert):
+        if key in os.environ:
+            return convert(os.environ[key])
+        else:
+            if default:
+                return convert(default)
+            else:
+                raise KeyError(key)
+    return dataclasses.field(default_factory=default_factory, **kwargs)
