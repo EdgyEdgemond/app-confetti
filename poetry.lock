@@ -18,7 +18,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 name = "attrs"
 version = "20.3.0"
 description = "Classes Without Boilerplate"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
@@ -30,20 +30,20 @@ tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>
 
 [[package]]
 name = "boto3"
-version = "1.17.7"
+version = "1.17.12"
 description = "The AWS SDK for Python"
 category = "main"
 optional = false
 python-versions = ">= 2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*"
 
 [package.dependencies]
-botocore = ">=1.20.7,<1.21.0"
+botocore = ">=1.20.12,<1.21.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
 [[package]]
 name = "botocore"
-version = "1.20.7"
+version = "1.20.12"
 description = "Low-level, data-driven core of boto 3."
 category = "main"
 optional = false
@@ -144,22 +144,6 @@ python-versions = ">=3.6"
 [package.dependencies]
 cached-property = "*"
 requests = "*"
-
-[[package]]
-name = "environ-config"
-version = "20.1.0"
-description = "Boilerplate-free configuration with env variables."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-attrs = ">=17.4.0"
-
-[package.extras]
-dev = ["pytest", "coverage", "sphinx", "sphinx-rtd-theme", "pre-commit"]
-docs = ["sphinx", "sphinx-rtd-theme"]
-tests = ["pytest", "coverage"]
 
 [[package]]
 name = "execnet"
@@ -271,7 +255,7 @@ zipp = ">=0.5"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "packaging", "pep517", "pyfakefs", "flufl.flake8", "pytest-black (>=0.3.7)", "pytest-mypy", "importlib-resources (>=1.3)"]
+testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "packaging", "pep517", "pyfakefs", "flufl.flake8", "pytest-black (>=0.3.7)", "pytest-mypy", "importlib-resources (>=1.3)"]
 
 [[package]]
 name = "isort"
@@ -340,7 +324,7 @@ pyparsing = ">=2.0.2"
 
 [[package]]
 name = "path"
-version = "15.1.0"
+version = "15.1.2"
 description = "A module wrapper for os.path"
 category = "dev"
 optional = false
@@ -348,7 +332,7 @@ python-versions = ">=3.6"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "appdirs", "packaging", "pygments", "pytest-black (>=0.3.7)", "pytest-mypy"]
+testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "appdirs", "packaging", "pygments", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [[package]]
 name = "path.py"
@@ -363,7 +347,7 @@ path = "*"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-black-multipy", "pytest-cov", "appdirs", "packaging", "pygments"]
+testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-black-multipy", "pytest-cov", "appdirs", "packaging", "pygments"]
 
 [[package]]
 name = "pluggy"
@@ -431,7 +415,7 @@ py = ">=1.5.0"
 wcwidth = "*"
 
 [package.extras]
-checkqa-mypy = ["mypy (v0.761)"]
+checkqa-mypy = ["mypy (==v0.761)"]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
@@ -461,7 +445,7 @@ coverage = ">=5.2.1"
 pytest = ">=4.6"
 
 [package.extras]
-testing = ["fields", "hunter", "process-tests (2.0.2)", "six", "pytest-xdist", "virtualenv"]
+testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pytest-git"
@@ -545,7 +529,7 @@ urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
 security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
+socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
 name = "s3transfer"
@@ -622,7 +606,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
-socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
+socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "wcwidth"
@@ -642,12 +626,12 @@ python-versions = ">=3.6"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
+testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "f05d3cf80e5cefcc03ec57c653cbc633a84b0a38b4ec05935ba80382a7160274"
+content-hash = "2c9698137bdc19addfcfb8357efd35fa8541b85030a3bf8681a054c5f6c3d9e7"
 
 [metadata.files]
 apipkg = [
@@ -663,12 +647,12 @@ attrs = [
     {file = "attrs-20.3.0.tar.gz", hash = "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"},
 ]
 boto3 = [
-    {file = "boto3-1.17.7-py2.py3-none-any.whl", hash = "sha256:8ecc9c8c13355a2ae0446a227d67bf011affba4cab644240a3dc6ca23978e583"},
-    {file = "boto3-1.17.7.tar.gz", hash = "sha256:56fad4485ef79bee64ad0d913c19e41b838a1cd6aefc935afefd7f393a0f0169"},
+    {file = "boto3-1.17.12-py2.py3-none-any.whl", hash = "sha256:bbc47e6f83372d9a18483895e7116ea50e8da32ffb62e8afc0a6e2323f964ed9"},
+    {file = "boto3-1.17.12.tar.gz", hash = "sha256:62f06cd1e7a78d8aaa4e527c327653e9a6c1af415b59836048a90c28a27e5f09"},
 ]
 botocore = [
-    {file = "botocore-1.20.7-py2.py3-none-any.whl", hash = "sha256:77e34194eb4f916d9caaf4b518a8b5d73ddbba87bf951cdb20141a6fafc9ccbe"},
-    {file = "botocore-1.20.7.tar.gz", hash = "sha256:27ea4a11f5cca9d655cb9ba462ad4a2bb28eb44d061b49e15a3239c040298ed2"},
+    {file = "botocore-1.20.12-py2.py3-none-any.whl", hash = "sha256:e576e1697ad9dc794961ed1ba51bdea7e0574ec27981c888482955f4be5cc4e8"},
+    {file = "botocore-1.20.12.tar.gz", hash = "sha256:39a92315a17a6f8bc1914dbb020f52e929f18e5b99a4fa1c5d8785f913427ed8"},
 ]
 bump2version = [
     {file = "bump2version-0.5.11-py2.py3-none-any.whl", hash = "sha256:bfcc051498dda9fd9ac8634689f4516e1c20fdeeace3278932cc6e1248418b36"},
@@ -757,10 +741,6 @@ ec2-metadata = [
     {file = "ec2-metadata-2.3.0.tar.gz", hash = "sha256:2c12317282de8da1c8315ed4333fb76ae91012d5dcff43fbc81e7e8776b101f8"},
     {file = "ec2_metadata-2.3.0-py3-none-any.whl", hash = "sha256:affd28d4897932d03511970e9703d9e49bf3702b481c6b8a4c471e461ca4a97c"},
 ]
-environ-config = [
-    {file = "environ-config-20.1.0.tar.gz", hash = "sha256:3167feda073bd3cd3457a3e5fa7c2836b6574c046cd0dcd79385ce3284e837bd"},
-    {file = "environ_config-20.1.0-py2.py3-none-any.whl", hash = "sha256:0e300307520c1e6a5424018b7f70246a2c7f4cb5cc5cbbebccc6a982eb1767cb"},
-]
 execnet = [
     {file = "execnet-1.8.0-py2.py3-none-any.whl", hash = "sha256:7a13113028b1e1cc4c6492b28098b3c6576c9dccc7973bfe47b342afadafb2ac"},
     {file = "execnet-1.8.0.tar.gz", hash = "sha256:b73c5565e517f24b62dea8a5ceac178c661c4309d3aa0c3e420856c072c411b4"},
@@ -821,8 +801,8 @@ packaging = [
     {file = "packaging-20.9.tar.gz", hash = "sha256:5b327ac1320dc863dca72f4514ecc086f31186744b84a230374cc1fd776feae5"},
 ]
 path = [
-    {file = "path-15.1.0-py3-none-any.whl", hash = "sha256:d685b7b69ec498415e295b395b95cba3646bb1e067ef870f8f71f1d019a2b0f6"},
-    {file = "path-15.1.0.tar.gz", hash = "sha256:ecf8a58ee4e45bf68a3c96e9715cac8b542e9790485193ec92e34957637624f8"},
+    {file = "path-15.1.2-py3-none-any.whl", hash = "sha256:e07601c83ae394cb05298c96e073c251d185599ecbf3cf7110b00f4d1898d53e"},
+    {file = "path-15.1.2.tar.gz", hash = "sha256:bb629aefd86825bf21c8bcfa0f8691a6e5abdc3e43d50b626fe6aac5b13f60b7"},
 ]
 "path.py" = [
     {file = "path.py-12.5.0-py3-none-any.whl", hash = "sha256:a43e82eb2c344c3fd0b9d6352f6b856f40b8b7d3d65cc05978b42c3715668496"},
