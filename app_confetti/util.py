@@ -36,11 +36,22 @@ def env(key, convert=str, **kwargs):
     key, _, default = key.partition(":")
 
     def default_factory(key=key, default=default, convert=convert):
-        if key in os.environ:
-            return convert(os.environ[key])
-        else:
+        _special = {
+            "__NONE__": None,
+            "__EMPTY__": "",
+            "__TRUE__": True,
+            "__FALSE__": False,
+        }
+        value = os.environ.get(key)
+        if value is None:
             if default:
-                return convert(default)
+                value = default
             else:
                 raise KeyError(key)
+
+        if value in _special:
+            return _special[value]
+
+        return convert(value)
+
     return dataclasses.field(default_factory=default_factory, **kwargs)
