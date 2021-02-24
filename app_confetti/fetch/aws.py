@@ -1,10 +1,21 @@
+import ast
 import os
 
 import boto3
 from botocore.exceptions import ClientError
 from ec2_metadata import ec2_metadata
 
-from app_confetti.util import str_to_literal
+
+def str_to_literal(val):
+    """
+    Construct an object literal from a str, but leave other types untouched
+    """
+    if isinstance(val, str):
+        try:
+            return ast.literal_eval(val)
+        except ValueError:
+            pass
+    return val
 
 
 def get_region():

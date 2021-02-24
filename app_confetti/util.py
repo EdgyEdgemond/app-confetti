@@ -1,18 +1,8 @@
-import ast
 import dataclasses
 import os
 
 
-def str_to_literal(val):
-    """
-    Construct an object literal from a str, but leave other types untouched
-    """
-    if isinstance(val, str):
-        try:
-            return ast.literal_eval(val)
-        except ValueError:
-            pass
-    return val
+sentinel = object()
 
 
 def env(key, convert=str, **kwargs):
@@ -33,24 +23,19 @@ def env(key, convert=str, **kwargs):
     Raises:
         KeyError: in the event an envvar isn't found and doesn't have a default
     """
-    key, _, default = key.partition(":")
+    key, partition, default = key.partition(":")
+
+    # handle `KEY:` for default of empty string as partition returns empty string when partition is missing.
+    if partition == "":
+        default = sentinel
 
     def default_factory(key=key, default=default, convert=convert):
-        _special = {
-            "__NONE__": None,
-            "__EMPTY__": "",
-            "__TRUE__": True,
-            "__FALSE__": False,
-        }
         value = os.environ.get(key)
         if value is None:
-            if default:
+            if default != sentinel:
                 value = default
             else:
                 raise KeyError(key)
-
-        if value in _special:
-            return _special[value]
 
         return convert(value)
 
