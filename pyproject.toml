@@ -9,7 +9,7 @@ homepage="https://github.com/EdgyEdgemond/app-confetti/"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 
 python-dotenv = "^0.15.0"
 boto3 = { version = "^1.14.49", optional = true }
@@ -21,16 +21,22 @@ aws = ["boto3", "ec2-metadata"]
 [tool.poetry.dev-dependencies]
 
 changelog-gen = "~0.7.0"
-flake8 = "^3.7"
-flake8-commas = "^2.0"
-flake8-isort = "^2.7"
-flake8-quotes = "^2.1"
-isort = "^4.3"
-pytest = "^5.2"
-pytest-asyncio = "*"
-pytest-cov = "^2.8"
+
+# Tests
+pytest = "^7.1.2"
+pytest-asyncio = "^0.18.3"
+pytest-cov = "^3.0.0"
 pytest-git = "^1.7.0"
-pytest-random-order = "^1.0"
+pytest-random-order = "^1.0.4"
+
+# # Style
+autopep8 = "^1.5.7"
+flake8 = "^3.9.2"
+flake8-commas = "^2.1.0"
+flake8-isort = "^4.1.1"
+flake8-quotes = "^3.3.1"
+isort = "^5.10.1"
+flake8-tabs = "^2.3.2"
 
 [build-system]
 requires = ["poetry-core>=1.0"]

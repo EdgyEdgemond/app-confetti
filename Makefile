@@ -5,7 +5,7 @@ install-dev:
 	poetry install
 
 check-style:
-	flake8
+	flake8 app_confetti tests
 
 tests:
 	pytest
