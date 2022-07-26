@@ -1,6 +1,7 @@
 # Configuration Fetcher v0.0.5
 
-Common code for interacting with dev environs and for deployed AWS environs.
+Common code for interacting with dev environs, deployed environs with ENV vars
+or for deployed AWS (optional extra) environs.
 
 ## Config class
 
