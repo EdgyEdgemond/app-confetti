@@ -1,8 +1,8 @@
 install:
-	poetry install --no-dev
+	poetry install --no-dev --extras=aws
 
 install-dev:
-	poetry install
+	poetry install --extras=aws
 
 check-style:
 	flake8 app_confetti tests

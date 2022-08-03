@@ -37,6 +37,9 @@ def env(key, convert=str, **kwargs):
             else:
                 raise KeyError(key)
 
-        return convert(value)
+        try:
+            return convert(value)
+        except ValueError as e:
+            raise ValueError("{} {}".format(key, str(e)))
 
     return dataclasses.field(default_factory=default_factory, **kwargs)

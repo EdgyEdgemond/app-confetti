@@ -17,6 +17,7 @@ def str_to_bool(v):
 class MockConfig():
     var_1: str = util.env("PREFIX_VAR_1")
     var_2: str = util.env("PREFIX_VAR_2:")
+    var_3: int = util.env("PREFIX_VAR_3:1", int)
 
     logging_level: str = util.env("LOGGING_LEVEL:INFO")
     sentry_dsn: str = util.env("SENTRY_DSN:None", optional_str)
@@ -38,10 +39,12 @@ class TestBaseConfig:
         assert c.env == "test"
         assert c.sentry_dsn is None
         assert c.var_2 == ""
+        assert c.var_3 == 1
 
     def test_overrides(self, monkeypatch):
         monkeypatch.setenv("PREFIX_VAR_1", "value_1")
         monkeypatch.setenv("PREFIX_VAR_2", "value_2")
+        monkeypatch.setenv("PREFIX_VAR_3", "4")
         monkeypatch.setenv("PREFIX_ENV", "env")
         monkeypatch.setenv("DEBUG", "True")
         monkeypatch.setenv("LOGGING_LEVEL", "DEBUG")
@@ -52,3 +55,13 @@ class TestBaseConfig:
         assert settings.debug is True
         assert settings.logging_level == "DEBUG"
         assert settings.sentry_dsn == "sentry-dsn"
+        assert settings.var_3 == 4
+
+    def test_invalid_override(self, monkeypatch):
+        monkeypatch.setenv("PREFIX_VAR_1", "value_1")
+        monkeypatch.setenv("PREFIX_VAR_3", "value_3")
+
+        with pytest.raises(ValueError) as e:
+            MockConfig()
+
+        assert str(e.value) == "PREFIX_VAR_3 invalid literal for int() with base 10: 'value_3'"
