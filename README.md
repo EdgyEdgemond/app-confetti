@@ -3,6 +3,10 @@
 Common code for interacting with dev environs, deployed environs with ENV vars
 or for deployed AWS (optional extra) environs.
 
+## Deprecated
+
+This is just doing a less complete job compared to (Pydantic)[https://pydantic-docs.helpmanual.io/usage/settings/].
+
 ## Config class
 
 ```python
