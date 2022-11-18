@@ -1,4 +1,4 @@
-# Configuration Fetcher v0.1.1
+# Configuration Fetcher v0.1.2
 
 Common code for interacting with dev environs, deployed environs with ENV vars
 or for deployed AWS (optional extra) environs.
