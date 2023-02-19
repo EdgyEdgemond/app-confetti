@@ -5,16 +5,13 @@ install-dev:
 	poetry install --extras=aws
 
 check-style:
-	flake8 app_confetti tests
+	ruff .
 
 tests:
 	pytest
 
 tests-coverage:
 	pytest --cov=app_confetti
-
-isort:
-	isort -y
 
 release:
 	changelog-gen
