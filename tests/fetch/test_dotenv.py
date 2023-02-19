@@ -18,7 +18,7 @@ class TestFetchToEnv:
         monkeypatch.setattr(os, "environ", {})
 
         start_path = tmp_path / "start" / "path"
-        start_path.mkdir(exist_ok=True)
+        start_path.mkdir(exist_ok=True, parents=True)
         monkeypatch.setattr(os, "getcwd", mock.Mock(return_value=start_path))
         file_path = tmp_path / ".env"
         with file_path.open("w") as fd:
