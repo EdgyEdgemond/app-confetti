@@ -1,4 +1,10 @@
 # Configuration Fetcher v0.2.0
+[![image](https://img.shields.io/pypi/v/web_error.svg)](https://pypi.org/project/app_confetti/)
+[![image](https://img.shields.io/pypi/l/web_error.svg)](https://pypi.org/project/app_confetti/)
+[![image](https://img.shields.io/pypi/pyversions/web_error.svg)](https://pypi.org/project/app_confetti/)
+![style](https://github.com/EdgyEdgemond/app_confetti/workflows/style/badge.svg)
+![tests](https://github.com/EdgyEdgemond/app_confetti/workflows/tests/badge.svg)
+[![codecov](https://codecov.io/gh/EdgyEdgemond/app_confetti/branch/master/graph/badge.svg)](https://codecov.io/gh/EdgyEdgemond/app-confetti)
 
 Common code for interacting with dev environs, deployed environs with ENV vars
 or for deployed AWS (optional extra) environs.
