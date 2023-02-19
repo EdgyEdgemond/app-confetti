@@ -14,7 +14,7 @@ or for deployed AWS (optional extra) environs.
         logging_level: str = util.env("LOGGING_LEVEL:INFO")
         sentry_dsn: int = util.env("SENTRY_DSN:__NONE__")
         debug: bool = util.env("DEBUG:__FALSE__")
-    
+
         @property
         def logging_config(self):
             return {
