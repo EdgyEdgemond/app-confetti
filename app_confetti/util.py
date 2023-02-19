@@ -1,11 +1,11 @@
 import dataclasses
 import os
-
+from typing import Any, Callable
 
 sentinel = object()
 
 
-def env(key, convert=str, **kwargs):
+def env(key: str, convert: Callable = str, **kwargs) -> dataclasses.Field:
     """
     A factory around `dataclasses.field` that can be used to load or default
     an envvar. If you wish to load from an external source, do that first and
@@ -29,7 +29,7 @@ def env(key, convert=str, **kwargs):
     if partition == "":
         default = sentinel
 
-    def default_factory(key=key, default=default, convert=convert):
+    def default_factory(key: str = key, default: Any = default, convert: Callable = convert) -> None:  # noqa: ANN401
         value = os.environ.get(key)
         if value is None:
             if default != sentinel:
@@ -40,6 +40,7 @@ def env(key, convert=str, **kwargs):
         try:
             return convert(value)
         except ValueError as e:
-            raise ValueError("{} {}".format(key, str(e)))
+            msg = f"{key} {str(e)}"
+            raise ValueError(msg) from e
 
     return dataclasses.field(default_factory=default_factory, **kwargs)

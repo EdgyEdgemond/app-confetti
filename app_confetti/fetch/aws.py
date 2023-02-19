@@ -1,12 +1,13 @@
 import ast
 import os
+from typing import Any
 
 import boto3
 from botocore.exceptions import ClientError
 from ec2_metadata import ec2_metadata
 
 
-def str_to_literal(val):
+def str_to_literal(val: str) -> Any:  # noqa: ANN401
     """
     Construct an object literal from a str, but leave other types untouched
     """
@@ -18,11 +19,11 @@ def str_to_literal(val):
     return val
 
 
-def get_region():
+def get_region() -> str:
     return ec2_metadata.region
 
 
-def fetch_to_env(secret_name="settings"):
+def fetch_to_env(secret_name: str = "settings") -> None:  # nosec: B107
     """
     If you need more information about configurations or implementing the sample code, visit the AWS docs:
     https://aws.amazon.com/developers/getting-started/python/
@@ -41,10 +42,7 @@ def fetch_to_env(secret_name="settings"):
 
     response = client.describe_instances(InstanceIds=[instance_id])
     tags = response["Reservations"][0]["Instances"][0]["Tags"]
-    tag_data = {
-        tag["Key"]: tag["Value"]
-        for tag in tags
-    }
+    tag_data = {tag["Key"]: tag["Value"] for tag in tags}
 
     # Create a Secrets Manager client
     client = session.client(
@@ -61,7 +59,7 @@ def fetch_to_env(secret_name="settings"):
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name,
         )
-    except ClientError as e:
+    except ClientError:
         """
         e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can"t decrypt the protected secret text using the provided KMS key.
@@ -79,7 +77,7 @@ def fetch_to_env(secret_name="settings"):
             # We can"t find the resource that you asked for.
             # Deal with the exception here, and/or rethrow at your discretion.
         """
-        raise e
+        raise
     else:
         # Decrypts secret using the associated KMS CMK.
         secret = get_secret_value_response["SecretString"]

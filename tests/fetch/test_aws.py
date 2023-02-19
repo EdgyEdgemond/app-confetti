@@ -7,20 +7,22 @@ from app_confetti.fetch import aws
 
 
 class TestStrToLiteral:
-
     @pytest.mark.parametrize("value", [{"a", "b"}, {"a": "b"}, [1, 2, 3], True, None, 5, 6.0, "value"])
     def test_non_string_literals_passed_through(self, value):
         assert aws.str_to_literal(value) == value
 
-    @pytest.mark.parametrize("value, expected", [
-        ("{'a', 'b'}", {"a", "b"}),
-        ("{'a': 'b'}", {"a": "b"}),
-        ("[1, 2, 3]", [1, 2, 3]),
-        ("True", True),
-        ("None", None),
-        ("5", 5),
-        ("6.0", 6.0),
-    ])
+    @pytest.mark.parametrize(
+        ("value", "expected"),
+        [
+            ("{'a', 'b'}", {"a", "b"}),
+            ("{'a': 'b'}", {"a": "b"}),
+            ("[1, 2, 3]", [1, 2, 3]),
+            ("True", True),
+            ("None", None),
+            ("5", 5),
+            ("6.0", 6.0),
+        ],
+    )
     def test_strings_return_literals(self, value, expected):
         assert aws.str_to_literal(value) == expected
 
@@ -126,7 +128,10 @@ class TestFetchToEnv:
         aws.fetch_to_env()
 
         assert aws.os.environ == {
-            "a": "True", "b": "10", "c": "str", "HOST": "tag",
+            "a": "True",
+            "b": "10",
+            "c": "str",
+            "HOST": "tag",
         }
 
     def test_client_error_reraised(self, monkeypatch):

@@ -14,7 +14,7 @@ def str_to_bool(v):
 
 
 @dataclasses.dataclass(frozen=True)
-class MockConfig():
+class MockConfig:
     var_1: str = util.env("PREFIX_VAR_1")
     var_2: str = util.env("PREFIX_VAR_2:")
     var_3: int = util.env("PREFIX_VAR_3:1", int)
@@ -27,7 +27,7 @@ class MockConfig():
 
 
 class TestBaseConfig:
-    def test_env_not_set(self, monkeypatch):
+    def test_env_not_set(self):
         with pytest.raises(KeyError):
             MockConfig()
 
@@ -55,13 +55,13 @@ class TestBaseConfig:
         assert settings.debug is True
         assert settings.logging_level == "DEBUG"
         assert settings.sentry_dsn == "sentry-dsn"
-        assert settings.var_3 == 4
+        assert settings.var_3 == 4  # noqa: PLR2004
 
     def test_invalid_override(self, monkeypatch):
         monkeypatch.setenv("PREFIX_VAR_1", "value_1")
         monkeypatch.setenv("PREFIX_VAR_3", "value_3")
 
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(ValueError) as e:  # noqa: PT011
             MockConfig()
 
         assert str(e.value) == "PREFIX_VAR_3 invalid literal for int() with base 10: 'value_3'"

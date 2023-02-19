@@ -1,7 +1,7 @@
 import dotenv
 
 
-def fetch_to_env(override=True):
+def fetch_to_env(override: bool = True) -> None:
     """Searches for an .env file recursively up the tree from cwd to root.
 
     The env var should contain standard VARIABLE="VALUE" lines. Lines prefixed

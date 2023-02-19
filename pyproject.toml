@@ -34,6 +34,64 @@ ruff = "^0.0"
 pre-commit = "^3.0.2"
 black = "^22.12.0"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--random-order"
+
+
+[tool.coverage.report]
+sort = "cover"
+fail_under = 95
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == '__main__':",
+    "@abc.abstractmethod",
+    "if typing.TYPE_CHECKING:",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app_confetti"]
+
+[tool.bandit]
+exclude_dirs = ["tasks.py"]
+skips = [
+    "B101",  # use of asserts
+]
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+select = ["ALL"]
+ignore = [
+    "ANN002",  # type annotation on *args
+    "ANN003",  # type annotation on **kwargs
+    "ANN101",  # annotate self
+    "ANN102",  # annotate cls
+    "D",
+    "FBT",  # boolean trap? no documentation
+    "S",  # bandit is run as a full commit hook
+]
+
+[tool.ruff.per-file-ignores]
+"tasks.py" = ["ANN", "E501", "INP001"]
+"tests/*" = ["ANN", "D"]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.poetry.scripts]
+changelog-gen = "changelog_gen.cli.command:gen"
+changelog-init = "changelog_gen.cli.command:init"
+
 [build-system]
 requires = ["poetry-core>=1.0"]
 build-backend = "poetry.core.masonry.api"
