@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0
+
+### Features and Improvements
+
+- Update dotenv dependency to 1.0.0 [[#1](https://github.com/EdgyEdgemond/web-error/1)]
+
 ## v0.2.0
 
 ### Features and Improvements
