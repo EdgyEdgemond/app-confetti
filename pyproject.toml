@@ -80,7 +80,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "tasks.py" = ["ANN", "E501", "INP001"]
-"tests/*" = ["ANN", "D"]
+"tests/*" = ["ANN", "D", "RUF009"]
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"

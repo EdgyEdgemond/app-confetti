@@ -40,7 +40,7 @@ def env(key: str, convert: Callable = str, **kwargs) -> dataclasses.Field:
         try:
             return convert(value)
         except ValueError as e:
-            msg = f"{key} {str(e)}"
+            msg = f"{key} {e!s}"
             raise ValueError(msg) from e
 
     return dataclasses.field(default_factory=default_factory, **kwargs)
