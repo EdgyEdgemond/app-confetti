@@ -11,7 +11,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.8"
 
-python-dotenv = "^0.15.0"
+python-dotenv = "^1.0.0"
 boto3 = { version = "^1.14.49", optional = true }
 ec2-metadata  = { version = "^2.2.0", optional = true }
 
@@ -93,5 +93,5 @@ changelog-gen = "changelog_gen.cli.command:gen"
 changelog-init = "changelog_gen.cli.command:init"
 
 [build-system]
-requires = ["poetry-core>=1.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
